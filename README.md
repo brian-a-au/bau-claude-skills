@@ -29,8 +29,8 @@ mkdir -p ~/.claude/skills
 
 ```bash
 # Clone the repository (if you haven't already)
-git clone https://github.com/brian-a-au/bau_claude_skills.git
-cd bau_claude_skills
+git clone https://github.com/brian-a-au/bau-claude-skills.git
+cd bau-claude-skills
 
 # Copy the desired skill to your Claude skills directory
 cp -r skills/adobe-api-setup ~/.claude/skills/
@@ -40,8 +40,8 @@ cp -r skills/adobe-api-setup ~/.claude/skills/
 
 ```bash
 # Clone and install all skills
-git clone https://github.com/brian-a-au/bau_claude_skills.git
-cd bau_claude_skills
+git clone https://github.com/brian-a-au/bau-claude-skills.git
+cd bau-claude-skills
 cp -r skills/* ~/.claude/skills/
 ```
 
@@ -64,7 +64,7 @@ Start a new Claude Code session. The skills will be automatically available. You
 To update to the latest version of the skills:
 
 ```bash
-cd bau_claude_skills
+cd bau-claude-skills
 git pull
 cp -r skills/* ~/.claude/skills/
 ```
