@@ -1,6 +1,6 @@
 # Claude Code Skills
 
-A personal collection of Claude Code skills for Adobe Analytics and Customer Journey Analytics work.
+A collection of Claude Code skills for Adobe Analytics and Customer Journey Analytics. Use them to understand the core concepts, set up API access, and run the Solution Design Reference tools for generating, grading, visualizing, and tracking your implementation.
 
 ## Skills
 
@@ -24,6 +24,7 @@ A personal collection of Claude Code skills for Adobe Analytics and Customer Jou
 | [aa-auto-sdr](skills/aa-auto-sdr/SKILL.md) | Runs the `aa_auto_sdr` CLI to generate Solution Design Reference docs from Adobe Analytics report suites, with batch runs, snapshots, diffs, and quality gates. |
 | [cja-auto-sdr](skills/cja-auto-sdr/SKILL.md) | Runs the `cja_auto_sdr` CLI to generate SDR docs from CJA Data Views, diff and snapshot changes, run org wide reports, and publish to Notion. |
 | [sdr-visualizer](skills/sdr-visualizer/SKILL.md) | Runs `sdr-visualizer` to turn SDR snapshots into a browsable HTML catalog with search, a reference graph, and Changes and Trend views. |
+| [sdr-grader](https://github.com/brian-a-au/sdr-grader/tree/main/skills/sdr-grader) | Reads and explains an `sdr-grader` grade report. This skill lives in the [sdr-grader repo](https://github.com/brian-a-au/sdr-grader), so install it from there. |
 
 ### Workflow
 
@@ -42,7 +43,7 @@ These skills wrap a set of command line tools. Each tool installs from PyPI with
 | sdr-grader | https://github.com/brian-a-au/sdr-grader | Grade a snapshot against a rubric and produce a scorecard |
 | sdr-visualizer | https://github.com/brian-a-au/sdr-visualizer | Build a browsable HTML catalog from a snapshot |
 
-The `sdr-grader` tool ships its own Claude skill in its repository, under `skills/sdr-grader`. That skill reads and explains a grade report. Install it from there if you want it. The `sdr-workflow` skill in this collection covers how to run the grader as part of the full workflow.
+The `sdr-grader` skill listed above lives in its own repository, so install it from there. The `sdr-workflow` skill in this collection covers how to run the grader as part of the full workflow.
 
 ## Installation
 
