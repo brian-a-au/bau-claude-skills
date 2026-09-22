@@ -32,61 +32,24 @@ Even for CJA-only projects, the service account needs an AEP product profile:
 3. Select or create a product profile.
 4. Assign the service account from the Developer Console project.
 
-## Full error catalog
+## Error catalog
 
-### invalid_client
-```
-{"error": "invalid_client", "error_description": "..."}
-```
-Causes: wrong Client ID, wrong or expired Secret, credentials regenerated.
-Fixes: re-copy the Client ID exactly; re-retrieve the Secret; check for extra spaces or missing characters.
+These generic OAuth errors are the same for any Adobe OAuth Server-to-Server credential:
 
-### invalid_scope
-```
-{"error": "invalid_scope", "error_description": "..."}
-```
-Causes: the scopes string does not match the console; a requested scope is not authorized.
-Fixes: copy scopes exactly from the credential; do not add or edit them.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `invalid_client` | Wrong or expired Client ID or Secret | Re-copy both from the console; check for stray spaces |
+| `invalid_scope` | Scopes string was edited | Paste scopes exactly as shown |
+| `unauthorized_client` | Not an OAuth Server-to-Server credential | Confirm the credential is OAuth Server-to-Server |
+| `401 Unauthorized` | Expired token or regenerated credentials | Confirm the Org ID and current Secret |
 
-### unauthorized_client
-```
-{"error": "unauthorized_client", "error_description": "..."}
-```
-Causes: OAuth Server-to-Server not enabled, or wrong credential configuration.
-Fixes: confirm the credential is OAuth Server-to-Server.
-
-### 403 Forbidden
-```
-ERROR - 403 Forbidden
-ERROR - Failed to fetch data: 403
-```
-Causes: service account not on the required product profiles; AEP API missing from the project; insufficient permission for the resource.
-Fixes: confirm both CJA API and AEP API are in the project; check product-profile assignments; wait 5-10 minutes for permission changes to propagate.
-
-### 401 Unauthorized
-```
-ERROR - 401 Unauthorized
-ERROR - Authentication failed
-```
-Causes: expired or invalid token; credentials changed in the console.
-Fixes: confirm credentials were not regenerated; confirm the Secret is current; confirm the Organization ID.
+**403 Forbidden** is the CJA-specific case. It usually means the service account is not on the required product profiles, or the AEP API is missing from the project. Confirm both the CJA API and the AEP API are in the project, check the product-profile assignments, and wait 5-10 minutes for the change to propagate.
 
 ## Security practices
 
-1. Never commit credentials. Gitignore `config.json`, `.env`, and any credential files.
-2. Inject secrets at runtime in CI/CD.
-3. Rotate the Client Secret periodically.
-4. Use product profiles with the minimum permissions needed.
-5. Review API usage in the Developer Console.
-
-Suggested `.gitignore` entries:
-```gitignore
-config.json
-.env
-*.secret
-.cja/
-credentials/
-```
+- Never commit credentials. Gitignore `config.json`, `.env`, and any credential files.
+- Inject secrets at runtime in CI/CD, and rotate the Client Secret periodically.
+- Use product profiles with the minimum permissions needed, and review API usage in the Developer Console.
 
 ## Key URLs
 

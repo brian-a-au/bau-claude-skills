@@ -46,59 +46,74 @@ These skills wrap a set of command line tools. Each tool installs from PyPI with
 
 The `sdr-grader` skill listed above lives in its own repository, so install it from there. The `sdr-workflow` skill in this collection covers how to run the grader as part of the full workflow.
 
+### How it fits together
+
+```mermaid
+flowchart LR
+    setup["API setup<br/>(credentials)"] --> aa
+    setup --> cja
+    aa["aa_auto_sdr<br/>Adobe Analytics"] --> snap["SDR +<br/>snapshot.json"]
+    cja["cja_auto_sdr<br/>CJA"] --> snap
+    snap --> grade["sdr-grader<br/>scorecard"]
+    snap --> viz["sdr-visualizer<br/>HTML catalog"]
+    snap --> diff["diff / trend<br/>change tracking"]
+```
+
+You set up credentials once, generate an SDR and a snapshot from Adobe Analytics or CJA, then grade, visualize, or diff that snapshot. The `sdr-workflow` skill runs this whole flow end to end.
+
 ## Installation
 
-You need [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and configured.
+You need [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and configured. There are two ways to install the skills.
 
-### Step 1: Create the skills directory
+### Option A: Install as a plugin (recommended)
+
+Add this repo as a plugin marketplace, then install the plugin. You get versioned installs and one-command updates.
+
+```
+/plugin marketplace add brian-a-au/bau-claude-skills
+/plugin install bau-claude-skills@bau-claude-skills
+```
+
+The skills are then available in every session, namespaced as `/bau-claude-skills:<skill-name>`, for example `/bau-claude-skills:aa-auto-sdr`. Update later with:
+
+```
+/plugin marketplace update
+```
+
+### Option B: Copy the skill folders
+
+Clone the repo and copy the skills you want into your Claude skills directory.
 
 ```bash
 mkdir -p ~/.claude/skills
-```
-
-### Step 2: Install the skills
-
-Clone this repository and copy the skills you want.
-
-```bash
 git clone https://github.com/brian-a-au/bau-claude-skills.git
 cd bau-claude-skills
-```
 
-Install one skill:
-
-```bash
+# one skill
 cp -r skills/adobe-analytics-api-setup ~/.claude/skills/
-```
 
-Install all of them:
-
-```bash
+# or all of them
 cp -r skills/* ~/.claude/skills/
 ```
 
-If you installed an earlier version, remove the folders that were renamed. `cja-sdr-generator` is now `cja-auto-sdr`, and `adobe-api-setup` was split into `adobe-analytics-api-setup` and `adobe-cja-api-setup`.
+Check the install with `ls ~/.claude/skills/`, then start a new session. If you installed an earlier version, remove the folders that were renamed. `cja-sdr-generator` is now `cja-auto-sdr`, and `adobe-api-setup` was split into `adobe-analytics-api-setup` and `adobe-cja-api-setup`.
 
 ```bash
 rm -rf ~/.claude/skills/cja-sdr-generator ~/.claude/skills/adobe-api-setup
 ```
 
-### Step 3: Check the install
-
-```bash
-ls ~/.claude/skills/
-```
-
-You should see the skill folders you copied.
-
-### Step 4: Use the skills
-
-Start a new Claude Code session. The skills load on their own. You can trigger one by describing the task or by naming the skill in your prompt.
-
-## Updating
+Update later by pulling and copying again:
 
 ```bash
 cd bau-claude-skills
 git pull
 cp -r skills/* ~/.claude/skills/
+```
+
+## Requirements
+
+The skills themselves only need Claude Code. The SDR command line tools they drive (`aa_auto_sdr`, `cja_auto_sdr`, `sdr-grader`, `sdr-visualizer`) need Python 3.14 or newer and install from PyPI, best with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv tool install aa-auto-sdr
 ```

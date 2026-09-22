@@ -26,51 +26,24 @@ Without this, authentication can succeed while no Analytics companies or report 
 
 Note: this uses the Adobe Analytics Admin Console product, not Adobe Experience Platform. Do not add the AEP API for an Adobe Analytics setup.
 
-## Full error catalog
+## Error catalog
 
-### invalid_client
-```
-{"error": "invalid_client", "error_description": "..."}
-```
-Causes: wrong Client ID, wrong or expired Secret, credentials regenerated.
-Fixes: re-copy the Client ID exactly; re-retrieve the Secret; check for extra spaces.
+These generic OAuth errors are the same for any Adobe OAuth Server-to-Server credential:
 
-### invalid_scope
-```
-{"error": "invalid_scope", "error_description": "..."}
-```
-Causes: the scopes string does not match the console; a requested scope is not authorized.
-Fixes: copy scopes exactly from the credential; do not edit them.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `invalid_client` | Wrong or expired Client ID or Secret | Re-copy both from the console; check for stray spaces |
+| `invalid_scope` | Scopes string was edited | Paste scopes exactly as shown |
+| `unauthorized_client` | Not an OAuth Server-to-Server credential | Confirm the credential is OAuth Server-to-Server |
+| `401 Unauthorized` | Expired token or regenerated credentials | Confirm the Org ID and current Secret |
 
-### unauthorized_client
-```
-{"error": "unauthorized_client", "error_description": "..."}
-```
-Causes: OAuth Server-to-Server not enabled, or wrong credential configuration.
-Fixes: confirm the credential is OAuth Server-to-Server.
-
-### 403 or empty results
-```
-ERROR - 403 Forbidden
-# or: --list-reportsuites returns nothing; /dimensions and /metrics are empty
-```
-Causes: the integration is not on an Adobe Analytics product profile, or a required scope is missing.
-Fixes: assign the Analytics product profile; add `read_organizations` and `additional_info.job_function`; wait 5-10 minutes for changes to propagate.
-
-### 401 Unauthorized
-```
-ERROR - 401 Unauthorized
-```
-Causes: expired or invalid token; credentials changed in the console.
-Fixes: confirm credentials were not regenerated; confirm the Secret is current; confirm the Organization ID.
+**403, or empty report suite / dimension / metric results**, is the Adobe Analytics-specific case. Auth can succeed while the integration is not on an Adobe Analytics product profile, or a required scope is missing. Assign the Analytics product profile, add `read_organizations` and `additional_info.job_function`, and wait 5-10 minutes for the change to propagate.
 
 ## Security practices
 
-1. Never commit credentials. Gitignore `config.json`, `.env`, and any credential files.
-2. Inject secrets at runtime in CI/CD.
-3. Rotate the Client Secret periodically.
-4. Use a product profile with the minimum report suite access needed.
-5. Review API usage in the Developer Console.
+- Never commit credentials. Gitignore `config.json`, `.env`, and any credential files.
+- Inject secrets at runtime in CI/CD, and rotate the Client Secret periodically.
+- Use a product profile with the minimum report suite access needed, and review API usage in the Developer Console.
 
 ## Key URLs
 
