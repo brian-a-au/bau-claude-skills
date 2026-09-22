@@ -89,11 +89,7 @@ cp -r skills/adobe-analytics-api-setup ~/.claude/skills/
 cp -r skills/* ~/.claude/skills/
 ```
 
-Check the install with `ls ~/.claude/skills/`, then start a new session. If you installed an earlier version, remove the folders that were renamed. `cja-sdr-generator` is now `cja-auto-sdr`, and `adobe-api-setup` was split into `adobe-analytics-api-setup` and `adobe-cja-api-setup`.
-
-```bash
-rm -rf ~/.claude/skills/cja-sdr-generator ~/.claude/skills/adobe-api-setup
-```
+Check the install with `ls ~/.claude/skills/`, then start a new session.
 
 Update later by pulling and copying again:
 
