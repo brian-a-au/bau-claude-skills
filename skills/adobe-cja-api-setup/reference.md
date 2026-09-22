@@ -1,6 +1,6 @@
-# adobe-api-setup reference
+# adobe-cja-api-setup reference
 
-Full detail behind the lean `SKILL.md`: complete error catalog, product-profile requirements, scopes, and a troubleshooting checklist.
+Full detail behind the lean `SKILL.md`: complete error catalog, product-profile requirements, scopes, and a troubleshooting checklist. This covers the CJA and AEP APIs. For the Adobe Analytics API 2.0, see the `adobe-analytics-api-setup` skill.
 
 ## OAuth scopes
 

@@ -23,7 +23,7 @@ Orchestrate the Adobe Solution Design Reference toolchain: generate, grade, visu
 | `sdr-grader` | `sdr-grader` (in the sdr-grader repo) | Grade a snapshot against a rubric |
 | `sdr-visualizer` | `sdr-visualizer` | Build a browsable HTML catalog |
 
-All four tools install from PyPI (`uv tool install ...`) and share the Adobe API credentials from the `adobe-api-setup` skill. The generators, grader, and visualizer all read the same JSON snapshots.
+All four tools install from PyPI (`uv tool install ...`) and use OAuth Server-to-Server credentials. The setup differs by platform: for Adobe Analytics use the `adobe-analytics-api-setup` skill, and for CJA use the `adobe-cja-api-setup` skill. The generators, grader, and visualizer all read the same JSON snapshots.
 
 ## Pick the platform
 
@@ -88,5 +88,5 @@ Exit-code reference for a CI script:
 
 ## Notes
 
-- Keep credentials out of the repo; inject them in CI. See `adobe-api-setup`.
+- Keep credentials out of the repo; inject them in CI. See `adobe-analytics-api-setup` (Adobe Analytics) or `adobe-cja-api-setup` (CJA).
 - The grader auto-detects platform from the snapshot. For CJA, generate with `--include-all-inventory` so all checks have evidence; AA includes inventory by default.

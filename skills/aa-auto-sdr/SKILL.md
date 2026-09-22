@@ -15,7 +15,7 @@ Guide for the [`aa_auto_sdr`](https://github.com/brian-a-au/aa_auto_sdr) CLI, wh
 - Filling the official Adobe BRD/SDR Excel template.
 - Gating a pipeline on naming or quality rules.
 
-For the Adobe API credentials this tool needs, use the `adobe-api-setup` skill. To turn a snapshot into a browsable catalog, use the `sdr-visualizer` skill. To grade an implementation, use the `sdr-grader` tool and its skill. For a full generate-grade-visualize workflow, use `sdr-workflow`. For the complete flag matrix, see [reference.md](reference.md).
+For the Adobe API credentials this tool needs, use the `adobe-analytics-api-setup` skill. To turn a snapshot into a browsable catalog, use the `sdr-visualizer` skill. To grade an implementation, use the `sdr-grader` tool and its skill. For a full generate-grade-visualize workflow, use `sdr-workflow`. For the complete flag matrix, see [reference.md](reference.md).
 
 ## Install and configure
 
@@ -95,4 +95,4 @@ aa_auto_sdr --exit-codes              # list every exit code
 aa_auto_sdr --explain-exit-code 11    # explain a code plus remediation
 ```
 
-Exit `0` is success; exit `3` is the `--warn-threshold` gate. Pipe-path failures print a machine-readable JSON error envelope on stderr. For auth errors (`401`/`403`), see the `adobe-api-setup` skill.
+Exit `0` is success; exit `3` is the `--warn-threshold` gate. Pipe-path failures print a machine-readable JSON error envelope on stderr. For auth errors (`401`/`403`), see the `adobe-analytics-api-setup` skill.

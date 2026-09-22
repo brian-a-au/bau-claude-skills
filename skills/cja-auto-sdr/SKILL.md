@@ -15,7 +15,7 @@ Guide for the [`cja_auto_sdr`](https://github.com/brian-a-au/cja_auto_sdr) CLI, 
 - Publishing an SDR registry to Notion.
 - Setting up CJA audits in CI/CD.
 
-For the Adobe API credentials this tool needs, use the `adobe-api-setup` skill. For a full generate-grade-visualize workflow, use the `sdr-workflow` skill. For the complete flag matrix, see [reference.md](reference.md).
+For the Adobe API credentials this tool needs, use the `adobe-cja-api-setup` skill. For a full generate-grade-visualize workflow, use the `sdr-workflow` skill. For the complete flag matrix, see [reference.md](reference.md).
 
 ## Install and configure
 
@@ -91,7 +91,7 @@ Exit codes: `0` success, `1` error or quality breach, `2` policy threshold excee
 | Symptom | Fix |
 |---------|-----|
 | `Configuration file not found` | `cja_auto_sdr --sample-config` to generate a template |
-| `HTTP 401 Unauthorized` | Confirm the Client Secret is current (see `adobe-api-setup`) |
+| `HTTP 401 Unauthorized` | Confirm the Client Secret is current (see `adobe-cja-api-setup`) |
 | `HTTP 403 Forbidden` | Confirm both CJA API and AEP API are in the project |
 | `Data view not found` | `--list-dataviews`; names are exact match |
 | `No data views found` | Check product-profile permissions in the Admin Console |
