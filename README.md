@@ -48,18 +48,11 @@ The `sdr-grader` skill listed above lives in its own repository, so install it f
 
 ### How it fits together
 
-```mermaid
-flowchart LR
-    setup["API setup<br/>(credentials)"] --> aa
-    setup --> cja
-    aa["aa_auto_sdr<br/>Adobe Analytics"] --> snap["SDR +<br/>snapshot.json"]
-    cja["cja_auto_sdr<br/>CJA"] --> snap
-    snap --> grade["sdr-grader<br/>scorecard"]
-    snap --> viz["sdr-visualizer<br/>HTML catalog"]
-    snap --> diff["diff / trend<br/>change tracking"]
-```
+![How the SDR tools fit together](assets/how-it-fits-together.svg)
 
 You set up credentials once, generate an SDR and a snapshot from Adobe Analytics or CJA, then grade, visualize, or diff that snapshot. The `sdr-workflow` skill runs this whole flow end to end.
+
+The diagram is editable: open [`assets/how-it-fits-together.excalidraw`](assets/how-it-fits-together.excalidraw) at [excalidraw.com](https://excalidraw.com) to change it.
 
 ## Installation
 
