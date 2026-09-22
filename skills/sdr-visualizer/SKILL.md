@@ -1,6 +1,6 @@
 ---
 name: sdr-visualizer
-description: Run sdr-visualizer to turn Adobe Analytics/CJA SDR snapshots into a self-contained, browsable HTML catalog with search, a reference graph, segment and calculated-metric anatomy, and Changes/Trend views. Use to visualize an SDR snapshot, a live report suite, or a data view.
+description: Run sdr-visualizer to turn Adobe Analytics/CJA SDR snapshots into a self-contained, browsable HTML catalog with search, a reference graph, segment and calculated-metric anatomy, and Changes/Trend views. Also maps AEP dataset-to-CJA lineage as a shareable HTML diagram (cja-lineage). Use to visualize an SDR snapshot, a live report suite or data view, or dataset lineage.
 ---
 
 # sdr-visualizer
