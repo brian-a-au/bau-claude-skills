@@ -15,7 +15,8 @@ A collection of Claude Code skills for Adobe Analytics and Customer Journey Anal
 
 | Skill | What it does |
 |-------|--------------|
-| [adobe-api-setup](skills/adobe-api-setup/SKILL.md) | Sets up Adobe AEP and CJA API access with OAuth Server to Server auth. Use it to configure credentials or to fix 401 and 403 errors. |
+| [adobe-analytics-api-setup](skills/adobe-analytics-api-setup/SKILL.md) | Sets up Adobe Analytics API 2.0 access with OAuth Server to Server auth, for `aa_auto_sdr`. Use it to configure credentials or to fix 401 and 403 errors. |
+| [adobe-cja-api-setup](skills/adobe-cja-api-setup/SKILL.md) | Sets up Adobe CJA and AEP API access with OAuth Server to Server auth, for `cja_auto_sdr`. Use it to configure credentials or to fix 401 and 403 errors. |
 
 ### SDR tooling
 
@@ -67,7 +68,7 @@ cd bau-claude-skills
 Install one skill:
 
 ```bash
-cp -r skills/adobe-api-setup ~/.claude/skills/
+cp -r skills/adobe-analytics-api-setup ~/.claude/skills/
 ```
 
 Install all of them:
@@ -76,10 +77,10 @@ Install all of them:
 cp -r skills/* ~/.claude/skills/
 ```
 
-If you installed an earlier version, remove the old `cja-sdr-generator` folder. It is now named `cja-auto-sdr`.
+If you installed an earlier version, remove the folders that were renamed. `cja-sdr-generator` is now `cja-auto-sdr`, and `adobe-api-setup` was split into `adobe-analytics-api-setup` and `adobe-cja-api-setup`.
 
 ```bash
-rm -rf ~/.claude/skills/cja-sdr-generator
+rm -rf ~/.claude/skills/cja-sdr-generator ~/.claude/skills/adobe-api-setup
 ```
 
 ### Step 3: Check the install

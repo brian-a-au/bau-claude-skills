@@ -1,17 +1,18 @@
 ---
-name: adobe-api-setup
-description: Set up Adobe AEP/CJA API access with OAuth Server-to-Server auth. Use when configuring API credentials for the SDR tools or troubleshooting OAuth 401/403, invalid_client, or invalid_scope errors.
+name: adobe-cja-api-setup
+description: Set up Adobe CJA and AEP API access with OAuth Server-to-Server auth. Use when configuring credentials for cja_auto_sdr or other CJA/AEP integrations, or troubleshooting OAuth 401/403, invalid_client, or invalid_scope errors. For the Adobe Analytics API 2.0, use adobe-analytics-api-setup instead.
 ---
 
-# Adobe AEP / CJA API Setup
+# Adobe CJA / AEP API Setup
 
-Configure OAuth Server-to-Server credentials for Adobe Experience Platform (AEP) and Customer Journey Analytics (CJA) APIs. Use this when setting up credentials for the SDR tools (`aa_auto_sdr`, `cja_auto_sdr`, `sdr-grader`, `sdr-visualizer`) or when an API call returns an auth error.
+Configure OAuth Server-to-Server credentials for the Customer Journey Analytics (CJA) and Adobe Experience Platform (AEP) APIs. Use this for `cja_auto_sdr` and other CJA or AEP integrations.
+
+For the Adobe Analytics report-suite tool (`aa_auto_sdr`), the setup is different (a different API and product profile). Use the `adobe-analytics-api-setup` skill for that.
 
 ## When to use
 
-- Setting up API credentials for the first time.
-- Wiring credentials into a project or CI pipeline.
-- Diagnosing `401`, `403`, `invalid_client`, `invalid_scope`, or `unauthorized_client` errors.
+- Setting up credentials for `cja_auto_sdr` or another CJA/AEP integration.
+- Diagnosing `401`, `403`, `invalid_client`, `invalid_scope`, or `unauthorized_client` errors on a CJA or AEP API call.
 
 ## Prerequisites
 
@@ -31,7 +32,7 @@ Confirm the user has:
 
 Both APIs share the same OAuth credentials.
 
-> **Add the AEP API even for CJA-only work.** It associates the service account with an Experience Platform product profile, which CJA API authentication requires. Missing this is the most common cause of `403` errors.
+> **Add the AEP API even for CJA-only work.** It associates the service account with an Experience Platform product profile, which CJA API authentication requires. Missing this is the most common cause of `403` errors. This is specific to CJA. The Adobe Analytics API does not need it.
 
 ## Credentials
 
@@ -48,7 +49,7 @@ Copy the scopes string exactly as shown. Editing it causes `invalid_scope`.
 
 ## Configuration methods
 
-The SDR tools read credentials from environment variables, a `.env` file, or `config.json` (env vars take precedence). Field names are the same everywhere: `ORG_ID`, `CLIENT_ID`, `SECRET`, `SCOPES`.
+`cja_auto_sdr` reads credentials from environment variables, a `.env` file, or `config.json` (env vars take precedence). Field names are the same everywhere: `ORG_ID`, `CLIENT_ID`, `SECRET`, `SCOPES`.
 
 ```json
 // config.json
@@ -65,7 +66,7 @@ The SDR tools read credentials from environment variables, a `.env` file, or `co
 export ORG_ID="ABC123DEF456@AdobeOrg"
 export CLIENT_ID="YOUR_CLIENT_ID"
 export SECRET="YOUR_CLIENT_SECRET"
-export SCOPES="openid,AdobeID,additional_info.projectedProductContext"
+export SCOPES="openid,AdobeID,read_organizations,additional_info.projectedProductContext"
 ```
 
 Never commit credentials. Add `config.json` and `.env` to `.gitignore`. Use a secrets store in CI.

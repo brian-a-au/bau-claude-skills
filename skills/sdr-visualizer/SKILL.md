@@ -40,7 +40,7 @@ sdr-visualizer --rsid prod_us         # live AA mode via aa_auto_sdr
 sdr-visualizer --dataview dv_prod     # live CJA mode via cja_auto_sdr
 ```
 
-`sdr-visualizer` stores no credentials of its own. Live modes rely on the upstream generator's credentials (see `adobe-api-setup`).
+`sdr-visualizer` stores no credentials of its own. Live modes rely on the upstream generator's credentials (see `adobe-analytics-api-setup` for Adobe Analytics or `adobe-cja-api-setup` for CJA).
 
 ## Changes and Trend views
 

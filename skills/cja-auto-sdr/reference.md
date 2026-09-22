@@ -19,7 +19,7 @@ Python 3.14+.
 
 Precedence: environment variables > `.env` (from `.env.example`) > `config.json` (from `config.json.example`).
 
-Fields: `ORG_ID` (`YOUR_ORG_ID@AdobeOrg`), `CLIENT_ID`, `SECRET`, `SCOPES`. Developer Console project must include both CJA API and AEP API. See the `adobe-api-setup` skill.
+Fields: `ORG_ID` (`YOUR_ORG_ID@AdobeOrg`), `CLIENT_ID`, `SECRET`, `SCOPES`. Developer Console project must include both CJA API and AEP API. See the `adobe-cja-api-setup` skill.
 
 Profiles stored in `~/.cja-auto-sdr/profiles/`.
 
