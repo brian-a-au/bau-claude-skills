@@ -1,67 +1,99 @@
 # Claude Code Skills
 
-Personal collection of Claude Code skills for workflow automation and integration.
+A personal collection of Claude Code skills for Adobe Analytics and Customer Journey Analytics work.
 
 ## Skills
 
-| Skill | Description |
-|-------|-------------|
-| [adobe-analytics-concepts](skills/adobe-analytics-concepts/SKILL.md) | Conceptual guidance for Adobe Analytics - core concepts (eVars, props, events), tracking design, analysis workflows, and governance |
-| [adobe-api-setup](skills/adobe-api-setup/SKILL.md) | Guide for configuring Adobe AEP and CJA API access with OAuth Server-to-Server authentication |
-| [cja-sdr-generator](skills/cja-sdr-generator/SKILL.md) | Generate SDR documents from CJA, compare Data Views, and track configuration changes |
-| [customer-journey-analytics-concepts](skills/customer-journey-analytics-concepts/SKILL.md) | Conceptual guidance for Adobe CJA - connections, data views, identity, cross-channel journey analysis |
+### Concepts
+
+| Skill | What it does |
+|-------|--------------|
+| [adobe-analytics-concepts](skills/adobe-analytics-concepts/SKILL.md) | Explains Adobe Analytics concepts such as eVars, props, events, scopes, attribution, tracking design, and governance. It does not connect to live data. |
+| [customer-journey-analytics-concepts](skills/customer-journey-analytics-concepts/SKILL.md) | Explains CJA concepts such as connections, data views, datasets, identity and stitching, and cross channel analysis. It does not connect to live data. |
+
+### Setup
+
+| Skill | What it does |
+|-------|--------------|
+| [adobe-api-setup](skills/adobe-api-setup/SKILL.md) | Sets up Adobe AEP and CJA API access with OAuth Server to Server auth. Use it to configure credentials or to fix 401 and 403 errors. |
+
+### SDR tooling
+
+| Skill | What it does |
+|-------|--------------|
+| [aa-auto-sdr](skills/aa-auto-sdr/SKILL.md) | Runs the `aa_auto_sdr` CLI to generate Solution Design Reference docs from Adobe Analytics report suites, with batch runs, snapshots, diffs, and quality gates. |
+| [cja-auto-sdr](skills/cja-auto-sdr/SKILL.md) | Runs the `cja_auto_sdr` CLI to generate SDR docs from CJA Data Views, diff and snapshot changes, run org wide reports, and publish to Notion. |
+| [sdr-visualizer](skills/sdr-visualizer/SKILL.md) | Runs `sdr-visualizer` to turn SDR snapshots into a browsable HTML catalog with search, a reference graph, and Changes and Trend views. |
+
+### Workflow
+
+| Skill | What it does |
+|-------|--------------|
+| [sdr-workflow](skills/sdr-workflow/SKILL.md) | Ties the SDR tools together. It walks you through generating, grading, visualizing, and diffing an implementation for audits, migrations, drift monitoring, and CI gating. |
+
+## The SDR ecosystem
+
+These skills wrap a set of command line tools. Each tool installs from PyPI with `uv tool install`.
+
+| Tool | Repository | Role |
+|------|------------|------|
+| aa_auto_sdr | https://github.com/brian-a-au/aa_auto_sdr | Generate SDR docs and snapshots from Adobe Analytics |
+| cja_auto_sdr | https://github.com/brian-a-au/cja_auto_sdr | Generate SDR docs and snapshots from CJA |
+| sdr-grader | https://github.com/brian-a-au/sdr-grader | Grade a snapshot against a rubric and produce a scorecard |
+| sdr-visualizer | https://github.com/brian-a-au/sdr-visualizer | Build a browsable HTML catalog from a snapshot |
+
+The `sdr-grader` tool ships its own Claude skill in its repository, under `skills/sdr-grader`. That skill reads and explains a grade report. Install it from there if you want it. The `sdr-workflow` skill in this collection covers how to run the grader as part of the full workflow.
 
 ## Installation
 
-### Prerequisites
+You need [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and configured.
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) must be installed and configured
-
-### Step 1: Create the skills directory (if it doesn't exist)
+### Step 1: Create the skills directory
 
 ```bash
 mkdir -p ~/.claude/skills
 ```
 
-### Step 2: Install skills
+### Step 2: Install the skills
 
-**Option A: Install a single skill**
+Clone this repository and copy the skills you want.
 
 ```bash
-# Clone the repository (if you haven't already)
 git clone https://github.com/brian-a-au/bau-claude-skills.git
 cd bau-claude-skills
+```
 
-# Copy the desired skill to your Claude skills directory
+Install one skill:
+
+```bash
 cp -r skills/adobe-api-setup ~/.claude/skills/
 ```
 
-**Option B: Install all skills at once**
+Install all of them:
 
 ```bash
-# Clone and install all skills
-git clone https://github.com/brian-a-au/bau-claude-skills.git
-cd bau-claude-skills
 cp -r skills/* ~/.claude/skills/
 ```
 
-### Step 3: Verify installation
+If you installed an earlier version, remove the old `cja-sdr-generator` folder. It is now named `cja-auto-sdr`.
 
-Check that your skills are installed correctly:
+```bash
+rm -rf ~/.claude/skills/cja-sdr-generator
+```
+
+### Step 3: Check the install
 
 ```bash
 ls ~/.claude/skills/
 ```
 
-You should see the skill folders listed (e.g., `adobe-analytics-concepts`, `adobe-api-setup`, `cja-sdr-generator`, `customer-journey-analytics-concepts`).
+You should see the skill folders you copied.
 
 ### Step 4: Use the skills
 
-Start a new Claude Code session. The skills will be automatically available. You can invoke them by describing the task or by referencing the skill name in your prompt.
+Start a new Claude Code session. The skills load on their own. You can trigger one by describing the task or by naming the skill in your prompt.
 
-### Updating skills
-
-To update to the latest version of the skills:
+## Updating
 
 ```bash
 cd bau-claude-skills

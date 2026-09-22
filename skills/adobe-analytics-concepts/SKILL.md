@@ -1,269 +1,55 @@
 ---
 name: adobe-analytics-concepts
-description: Conceptual guidance for Adobe Analytics - explains core concepts (eVars, props, events), helps design tracking approaches, supports analysis workflows, and clarifies admin/governance topics. Does not connect to live data.
+description: Conceptual guidance for Adobe Analytics - eVars vs props vs events, scopes, attribution, tracking design, analysis workflows, and admin/governance. Use for how-Adobe-Analytics-works questions. Does not connect to live data.
 ---
 
-# Adobe Analytics Concepts & Knowledge
+# Adobe Analytics Concepts
 
-This skill enables Claude to **reason about and explain Adobe Analytics** at a conceptual level. It is intended for:
+Explain and reason about Adobe Analytics at a conceptual level: terminology, tracking design, analysis, and governance. This is documentation-aligned, implementation-agnostic guidance. It does not connect to live data or APIs.
 
-- Explaining **core concepts**: dimensions, metrics, segments, eVars, props, events, classifications.
-- Helping design or review **tracking approaches and solution architectures** (conceptually).
-- Supporting **analysis workflows** in Analysis Workspace.
-- Clarifying **admin & governance** topics: report suites, virtual report suites, roles, processing rules.
+## When to use
 
-This skill **does not** connect to live Adobe Analytics data or APIs. It focuses on **documentation-aligned, implementation-agnostic guidance**.
+- The user asks how Adobe Analytics works ("eVar vs prop?", "how does attribution work?").
+- The user needs conceptual tracking design ("how should we track our checkout funnel?").
+- The user needs analysis guidance ("how do I build a fallout report?", "why is revenue inflated?").
+- The user asks about admin or governance ("when should I use a virtual report suite?").
 
----
+If the question is about live values, tenant-specific config, or running a report, this skill does not apply. Say so and point to the product UI or an admin.
 
-## When To Use This Skill
+## Core concepts
 
-Claude should lean on this skill when the user:
+- **eVar** (conversion variable): persists and supports attribution. Use it for anything you will later attribute conversions to (campaign, user type, product ID).
+- **prop** (traffic variable): hit-scoped, no persistence. Use it for contextual breakdowns and pathing (page name, UI state, error flag).
+- **event**: a counter you increment (orders, form submits, custom success events). Events feed calculated metrics.
+- **Scope:** hit, visit, or visitor. Match the variable scope to the question you will ask.
+- **Persistence and expiration:** eVars hold a value until they expire (on a hit, visit, time window, or event). Choose expiration to match the entity (campaign, product, content).
+- **Attribution:** first touch, last touch, linear, and others decide which eVar value gets credit for a success event.
 
-- Asks how Adobe Analytics works:
-  - "What's the difference between an eVar and a prop?"
-  - "How does attribution work in Adobe Analytics?"
-- Needs conceptual implementation guidance:
-  - "How should we track our checkout funnel?"
-  - "Where should I store campaign parameters?"
-- Needs help analyzing data (conceptually):
-  - "How do I build a fallout report?"
-  - "Why might my revenue metric look inflated?"
-- Asks about admin/governance topics:
-  - "When should I use a virtual report suite?"
-  - "How should we structure our report suites?"
+## Designing tracking
 
-If the core of the question is **Adobe Analytics tracking, concepts, reporting, or governance**, this skill is *in scope*.
+- Choose the variable type from the question: "which X led to Y conversions?" means X is usually an eVar; a breakdown or path means a prop.
+- Set scope and expiration to the entity being measured.
+- Prefer event-based tracking: fire on the real action (submit, click, state change), not just page load.
+- Keep a data layer with consistent, human-readable names. Document classifications and taxonomies.
+- Separate responsibilities: data layer / source events, Web SDK or app SDK mappings, processing rules, and admin config.
 
----
+## Analysis guidance
 
-## Capabilities
+- Structure Workspace projects around the business question: freeform tables, then fallout, flow, or cohort views.
+- Build segments that map to real questions rather than reusing ad hoc filters.
+- Watch for common pitfalls: double-counting from double-fired events, metric inflation, and mis-scoped variables.
+- Recommend sanity checks the user can run themselves (break a metric down by a key dimension, compare trends, reconcile against a back-end total within tolerance).
 
-When this skill is active, Claude can:
+## Admin and governance
 
-### 1. Explain Core Concepts
+- Report suite vs virtual report suite: use a VRS to reshape reporting (segmentation, curated components) without a separate data collection.
+- Roles and permissions control who sees and edits what; describe them in broad terms.
+- Push naming standards, versioned tracking specs, and shared, reusable segments and calculated metrics.
 
-- Compare key constructs:
-  - `eVars` vs `props` vs `events`
-  - `dimensions` vs `metrics`
-  - `segments` vs `filters` vs `breakdowns`
-  - Standard vs calculated metrics
-- Describe scopes and behaviors:
-  - Hit, visit, and visitor scope
-  - Variable persistence / expiration
-  - Attribution models (e.g., first touch, last touch, linear)
+## Guardrails
 
-### 2. Support Conceptual Implementation Design
+- Do not pretend to see the user's data, report suites, or config.
+- Label general best practice ("typically...", "in many implementations...") separately from implementation-specific advice.
+- Flag uncertainty and suggest checking Admin settings, internal docs, or current Adobe documentation, since UI details change.
 
-- Translate business requirements into **tracking approaches**, including:
-  - Which variable types to use (eVar/prop/event)
-  - Appropriate scopes and expirations for entities (user, visit, campaign, product, content).
-- Discuss high-level **solution design choices**:
-  - Page-based vs event-based tracking
-  - Data layer usage and naming conventions
-  - Classifications and taxonomies for reporting
-- Distinguish responsibilities between:
-  - Data layer / source events
-  - Web SDK / app SDK mappings
-  - Processing rules
-  - Admin configuration
-
-### 3. Guide Analysis & Reporting
-
-- Help plan:
-  - Freeform tables and basic Workspace projects
-  - Funnels, fallout, flow, cohort-style analyses (conceptual structure)
-  - Segments aligned to business questions
-- Identify:
-  - Suitable dimensions and metrics for common use cases (content, campaigns, funnels, retention)
-  - Typical pitfalls (double-counting, metric inflation, mis-scoped variables)
-- Suggest:
-  - Conceptual QA steps (sanity checks, trend comparisons, breakdowns to detect issues)
-
-### 4. Explain Admin & Governance Concepts
-
-- Clarify at a high level:
-  - Report suites vs virtual report suites
-  - Multi-suite tagging trade-offs (conceptually)
-  - Roles/permissions (what they control in broad terms)
-- Provide governance recommendations:
-  - Naming and documentation standards
-  - Change management for tracking
-  - Reusability of assets (segments, calculated metrics, templates)
-
-### 5. Coach on Best Practices
-
-- Encourage:
-  - Thoughtful variable planning and allocation
-  - Consistent, human-readable taxonomies
-  - Maintaining and versioning tracking specs
-  - Using segments and calculated metrics as shared components
-
----
-
-## Out of Scope
-
-This skill **must not** be used for:
-
-- **Live environment access**
-  - No direct queries to Adobe Analytics data.
-  - No assumptions about current values or customer-specific numbers.
-
-- **Precise, current UI walkthroughs**
-  - Do not rely on pixel-perfect or menu-by-menu UI descriptions.
-  - Instead, give conceptual navigation guidance and suggest checking the latest Adobe docs.
-
-- **Customer- or tenant-specific assumptions**
-  - Do not guess report suite names, variable IDs, or roles.
-  - Do not assume naming conventions or implementation details unless provided by the user.
-
-- **Undocumented guarantees**
-  - No promises about SLAs, performance, or internal system limits beyond official documentation.
-  - Avoid asserting undocumented product behavior as fact.
-
-When uncertain, Claude should explicitly **flag the uncertainty** and recommend consulting Admin settings, internal documentation, or official Adobe docs.
-
----
-
-## Usage Guidelines for Claude
-
-### 1. Clarify Context Before Diving In
-
-Ask a small number of focused questions when needed, for example:
-
-- "Is this for web, mobile app, or both?"
-- "Are you asking about how to *track* this, or how to *interpret* the data?"
-- "Are you using Web SDK / Event Forwarding, or an older appMeasurement/Launch setup?"
-
-Aim for 1-3 questions, prioritizing those that materially change the recommended approach.
-
-### 2. Use Adobe Analytics Terminology Explicitly
-
-Anchor explanations in core concepts, e.g.:
-
-- "This fits a *visit-scoped eVar* because you want attribution across pages within a session."
-- "You should use a **custom event** so you can count occurrences and feed calculated metrics."
-- "This is better as a **hit-scoped prop** for pathing and immediate context."
-
-When comparing options, make tradeoffs explicit:
-
-- "eVar offers persistence and attribution; prop offers hit-level context and pathing. Choose based on whether you need attribution to success events."
-
-### 3. Start with a Short Answer, Then Offer Depth
-
-Structure responses as:
-
-1. **Concise recommendation**:
-   - 2-4 sentences that directly answer "what to do" or "what this is".
-2. **Optional deeper sections**:
-   - "Why this works"
-   - "Alternatives and tradeoffs"
-   - "Things to watch out for"
-
-If the user demonstrates advanced knowledge, adjust depth accordingly (e.g., attribution nuance, multi-suite strategy, virtualization patterns).
-
-### 4. Encourage Documentation & Validation
-
-For implementation-related questions, Claude should:
-
-- Encourage **recording decisions**:
-  - "Add this to your tracking spec with variable IDs, scope, and expiration."
-- Suggest **validation approaches**:
-  - "Verify the variable is populated in your debugger or network calls."
-  - "Check a low-latency dev report suite to confirm values and basic counts."
-
-Claude must **not** imply it sees the tenant's data. It should describe what *the user* should look for.
-
----
-
-## Prompt Patterns & Example Behaviors
-
-These examples describe *patterns* of behavior rather than exact wording that must be used.
-
----
-
-### Example Pattern 1: Core Concept Clarification
-
-**User:**
-"What's the difference between an eVar and a prop, and when should I use each?"
-
-**Expected behavior:**
-
-- Summarize:
-  - eVar: conversion variable with persistence and attribution.
-  - prop: traffic variable with hit-level scope and no persistence.
-- Map to use cases:
-  - eVar for things you want to attribute conversions to (campaigns, user categories, product IDs).
-  - prop for contextual breakdowns and pathing (page names, UI states, error flags).
-- Provide a simple decision rule:
-  - "If someone will later ask 'which X led to Y conversions?', X usually belongs in an eVar."
-
----
-
-### Example Pattern 2: Implementation Design
-
-**User:**
-"We want to measure how many users complete a 4-step signup funnel. How should we design this?"
-
-**Expected behavior:**
-
-- Recommend **step signals**:
-  - Either a step-name dimension (eVar) and/or individual custom events per step.
-- Emphasize **event-based tracking**:
-  - Trigger tracking when each step is actually completed (form submit, button click, state change).
-- Discuss analysis:
-  - Use a **fallout-style** view (conceptually) comparing step progression.
-- Add best practices:
-  - Consistent step IDs/names.
-  - Documentation of variable/event mappings.
-  - Testing in a dev environment before rollout.
-
----
-
-### Example Pattern 3: Analysis Troubleshooting
-
-**User:**
-"Our 'Orders' metric looks inflated. What should we check?"
-
-**Expected behavior:**
-
-- Suggest checks on:
-  - Event firing logic (double firing on confirmation page load + click).
-  - Uniqueness of order ID (e.g., repeated IDs per visit).
-  - Segments that may multiply counts (e.g., multiple hits per order).
-- Recommend sanity checks:
-  - Break down `Orders` by `Order ID` to spot duplicates.
-  - Compare orders to back-end system totals for a given day (tolerance-based).
-- Clearly note:
-  - Claude is suggesting **troubleshooting steps**, not reporting live values.
-
----
-
-## Guardrails & Safety
-
-When this skill is in use, Claude must:
-
-- **Avoid pretending** to see data, report suites, or tracking configs.
-- Label **best practices** vs **implementation-specific** advice:
-  - "Typically..." / "In many implementations..." for general guidance.
-  - Be explicit when something could vary by customer architecture.
-- Redirect gracefully when out of scope:
-  - If asked to run live analyses or manipulate Adobe Analytics settings, explain that this skill is conceptual and suggest using appropriate tools or human admin access.
-
----
-
-## Summary
-
-This skill enables Claude to:
-
-- Speak fluently about **Adobe Analytics concepts and design patterns**.
-- Help users:
-  - Understand terminology and behavior.
-  - Plan and document tracking approaches.
-  - Structure analyses and interpret likely issues.
-- Operate safely:
-  - No live data access.
-  - No tenant-specific guesses.
-  - Clear separation between general best practices and implementation-dependent details.
-
-Use this skill whenever the task centers on **understanding, designing, or interpreting Adobe Analytics tracking and reporting** at a conceptual level.
+For worked example dialogues (concept clarification, funnel design, troubleshooting an inflated metric), see [reference.md](reference.md).

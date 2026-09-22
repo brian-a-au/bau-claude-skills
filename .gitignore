@@ -12,3 +12,7 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Superpowers design/planning artifacts (local only, not part of the published skills)
+docs/superpowers/
+plans/
