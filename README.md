@@ -101,8 +101,17 @@ cp -r skills/* ~/.claude/skills/
 
 ## Requirements
 
-The skills themselves only need Claude Code. The SDR command line tools they drive (`aa_auto_sdr`, `cja_auto_sdr`, `sdr-grader`, `sdr-visualizer`) need Python 3.14 or newer and install from PyPI, best with [uv](https://docs.astral.sh/uv/):
+The skills themselves only need Claude Code. Nothing else is required to read the concepts or follow the setup steps.
 
-```bash
-uv tool install aa-auto-sdr
-```
+The SDR command line tools that the skills drive need Python 3.14 or newer. Each tool is a separate package on PyPI. Install them with [uv](https://docs.astral.sh/uv/), which is the recommended way:
+
+| Tool | Install |
+| ---- | ------- |
+| `aa_auto_sdr` | `uv tool install aa-auto-sdr` |
+| `cja_auto_sdr` | `uv tool install cja-auto-sdr` |
+| `sdr-grader` | `uv tool install sdr-grader` |
+| `sdr-visualizer` | `uv tool install sdr-visualizer` |
+
+You do not need every tool. Install only the ones you plan to use. If you prefer pip, run `pip install` with the same package name, for example `pip install aa-auto-sdr`.
+
+The tools read live data from Adobe, so they need OAuth Server to Server credentials. Set these up once with the `adobe-analytics-api-setup` skill for Adobe Analytics, or the `adobe-cja-api-setup` skill for CJA.
