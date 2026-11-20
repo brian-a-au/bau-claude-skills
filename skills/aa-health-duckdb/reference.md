@@ -2,14 +2,14 @@
 
 Option tables for the `ahd` CLI. Verified 2026-11-19 against version 0.1.18. The command is `ahd`. The PyPI package is `aa-health-duckdb`. It is read-only against Adobe Analytics and needs Python 3.12 or newer. The full docs are in the repo's [`docs/`](https://github.com/brian-a-au/aa-health-duckdb/tree/main/docs) folder.
 
-## Options for every command
+## Shared options
 
 | Option | Purpose |
 |---|---|
-| `--profile NAME` | Use `~/.aa/orgs/NAME/config.json` and `~/.aa/orgs/NAME/ahd.duckdb`. It can go before or after the command. `AA_PROFILE` sets it too. |
-| `--config PATH` | Use this credential file instead of `./config.json`. Not with a profile. |
-| `--company ID_OR_NAME` | Choose the login company when the credential sees more than one. |
-| `--db PATH` | Use this database file. |
+| `--profile NAME` | On every command. Use `~/.aa/orgs/NAME/config.json` and `~/.aa/orgs/NAME/ahd.duckdb`. It can go before or after the command. `AA_PROFILE` sets it too. |
+| `--config PATH` | Use this credential file instead of `./config.json`. Not with a profile. Only on `check`, `suites`, `segments`, `run` and `individual`. |
+| `--company ID_OR_NAME` | Choose the login company when the credential sees more than one. Only on `check`, `suites`, `segments`, `run` and `individual`. |
+| `--db PATH` | Use this database file. On every command except `check`, `suites` and `segments`. |
 | `--verbose` | Debug detail to stderr. Put it before the command, e.g., `ahd --verbose run ...`. |
 
 The commands that sign in are `check`, `suites`, `segments`, `run` and `individual`. The commands `runs`, `render`, `alerts`, `export`, `prune` and `import` never call Adobe.
@@ -60,11 +60,11 @@ With several suites, a failed suite does not stop the others. The exit code is t
 | `--format text\|json\|csv` | Default `text`. |
 | `--new-only` | Only alerts that started on the day. Exit 4 when none are new. |
 | `--every-alert` | In text, list every alert of a suite-wide event, not only the first 5. |
-| `--change-alert`, `--spike-alert` | Any percent, e.g., `27.5`. |
+| `--change-alert`, `--spike-alert` | A percent above 0, at most 100 for drops and 200 for spikes. Decimals work, e.g., `27.5`. |
 | `--anomaly-method`, `--anomaly-sensitivity` | As in `run`. |
 | `--date YYYY-MM-DD` | Only decides whether a run counts as old. |
 
-JSON shape: `{"format_version": 1, "runs": [...]}`. Each run has `run_id`, `rsid`, `rsid_name`, `segment_id`, `status`, `day`, `method`, `threshold`, `spike_threshold`, `stale`, `warning`, `events` and `alerts`. Each alert has `alert` (`unusual`, `large drop`, `large spike`, `dropped to zero`), `component_id`, `name`, `value`, `usual`, `expected`, `pct_vs_usual`, `since`, `days`, `is_new` and `event`. Ignore fields you do not know, because later versions add fields.
+JSON shape: `{"format_version": 1, "runs": [...]}`. Each run has `run_id`, `rsid`, `rsid_name`, `segment_id`, `status`, `day`, `method`, `method_name`, `sensitivity`, `threshold`, `spike_threshold`, `current_day`, `stale`, `failed_after`, `warning`, `events` and `alerts`. `threshold` and `spike_threshold` are shares, e.g., `0.3` is 30 percent. Each alert has `alert` (`unusual`, `large drop`, `large spike`, `dropped to zero`), `anomaly`, `component_id`, `name`, `group`, `metric_type`, `value`, `usual`, `expected`, `pct_vs_usual`, `since`, `days`, `at_least`, `is_new` and `event`. `pct_vs_usual` is also a share. Ignore fields you do not know, because later versions add fields.
 
 A suite-wide event is 10 or more alerts of one kind that cover at least half of the components that collected data, e.g., when the whole suite stopped collecting.
 
@@ -76,7 +76,7 @@ A suite-wide event is 10 or more alerts of one kind that cover at least half of 
 | `--profile prod` | `~/.aa/orgs/prod/ahd.duckdb` |
 | `--db PATH` | that file |
 
-Open it with `duckdb -readonly <file>`. The `duckdb` CLI (2.0 or newer) is a separate install, e.g., `brew install duckdb`. The `latest_runs` view has the columns of `runs`, e.g., `run_id`, `rsid`, `rsid_name`, `segment_id`, `today` and `status`. A write by `ahd run` locks the file, and an open session blocks `ahd run`.
+Open it with `duckdb -readonly <file>`. The `duckdb` CLI (2.0 or newer) is a separate install, e.g., `brew install duckdb`. The `latest_runs` view has the columns of `runs`, e.g., `run_id`, `rsid`, `rsid_name`, `segment_id`, `today` and `status`. While `ahd run`, `ahd individual`, `ahd prune` or `ahd import` writes to the file, nothing else can open it. An open `duckdb` session blocks those four commands.
 
 Tables: `runs`, `components`, `daily_values`, `pairs`, `top_items`, `breakdowns`, `breakdown_totals`, `issues`. Views: `latest_runs` (latest finished run per suite and segment) and `component_days`. Table macros: `alerts(run, ...)`, `suite_events(run, ...)` and `anomaly_days(run, ...)`.
 

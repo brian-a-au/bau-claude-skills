@@ -48,9 +48,11 @@ Copy `SCOPES` exactly as the Developer Console shows it. The Developer Console p
 
 ```bash
 cja-audit-log-monitor cli verify          # logs in, makes one call, prints the log count
-cja-audit-log-monitor cli init            # writes ~/.cja-audit-log-monitor/config.yaml
+cja-audit-log-monitor cli init            # writes the config file (see below)
 cja-audit-log-monitor cli config          # shows settings in use and the config path
 ```
+
+`cli init` writes to the `-c` path, else `CJA_CONFIG_PATH`, else `~/.cja-audit-log-monitor/config.yaml`. If the file exists, it asks before it replaces it. Do not run `init` over an existing config without asking the user. If you write the config by hand, run `chmod 600` on it, or the tool warns on every run.
 
 ## Common tasks
 
@@ -80,11 +82,12 @@ Facts that agents often get wrong:
 
 - `search` takes dates (`-s`, `-e`), not `--days`. `-s` and `-e` take `YYYY-MM-DD`, `YYYYMMDD` or an ISO date and time, read as UTC. For a relative window, compute the start date, or use `query --last-month`, `user -d N` or `find-action -d N`.
 - `search`, `query`, `user`, `component` and `dashboard` return at most 100 entries, and `list` and `find-action` at most 50. Raise `-l` for wider questions, e.g., `-l 5000`. `export` has no limit unless you give `--max-entries`.
-- `-a` (action) and `-C` (component) can be repeated, and they ignore case.
+- `-a` (action) can be repeated on `search`, `query`, `export`, `timeline` and `tail`. `-C` (component) can be repeated on `list`, `search`, `query`, `export` and `timeline`. Both ignore case. `find-action -a` takes one action, and a second `-a` silently replaces the first. For several actions, use `search -a X -a Y`.
 - Action names: `CREATE`, `EDIT`, `DELETE`, `SHARE`, `UNSHARE`, `APPROVE`, `UNAPPROVE`, `EXPORT`, `TRANSFER`, `API_REQUEST`, and more. Component names: `PROJECT`, `FILTER` (segments), `CALCULATED_METRIC`, `DATA_VIEW`, `CONNECTION`, `AUDIENCE`, `FULL_TABLE_EXPORT`, and more. Run `cli actions` and `cli components` for the full lists.
-- `export` refuses a file that exists unless you add `--force`.
+- `export -o` and `report -o` refuse a file that exists unless you add `--force`.
+- `report` reads at most 10,000 entries unless you raise `--max-entries`. When it stops early, it warns on stderr and sets `"truncated": true`.
 - `-F json` works on most read commands. `export` uses `-F` for `json`, `csv` or `tsv`. `report` always writes JSON. `monitor` and `tail` have no JSON mode.
-- Data goes to stdout and messages go to stderr, so `> file` captures only data.
+- Data goes to stdout and messages go to stderr, so `> file` captures only data. The exceptions are `verify`, which prints its failure on stdout, `monitor` and `tail`, which print status lines on stdout, and `anomalies`, which prints "No anomalies found ..." on stdout.
 
 ## Alert rules
 
@@ -111,10 +114,12 @@ notifications:
   notify_on_alerts: true
 ```
 
-- If the file has any `alert_rules`, they replace the four built-in rules (`bulk_delete`, `bulk_export`, `sensitive_component_delete`, `bulk_share`). They are not merged. Copy the built-in rules you want to keep. `cli init` writes them, commented out.
+- If the file has any `alert_rules`, they replace the four built-in rules (`bulk_delete`, `bulk_export`, `sensitive_component_delete`, `bulk_share`). They are not merged. Copy the built-in rules you want to keep. `cli init` writes them, commented out. `alert_rules: []` turns off every rule. Only a missing `alert_rules` key gives the built-in rules.
 - Use `per_user: true` for volume rules. Without it, events from everyone count together.
+- A misspelled key, e.g., `treshold_count`, only gives a warning. The tool drops the key, so `threshold_count` falls back to 1 and the rule fires on every matching event. After every edit, run `cli alerts list` and check the warnings and the Count and Win columns.
 - `cli alerts list` shows the loaded rules. `cli alerts test -d 1` runs the rules and the anomaly checks against the last day and sends nothing.
 - Rules fire only in `cli monitor`, `cli tail` and the TUI monitor view. A one-off `search` never fires a rule, and `anomalies` does not use rules. So for Slack alerts from rules, keep `cli monitor` running, e.g., in `tmux` or under systemd or launchd.
+- Rules do not look back. The first poll of `monitor` or `tail` shows recent events as a baseline, and they do not count toward rules. To check a burst that already happened, run `cli alerts test -d N`.
 
 ## Monitoring and anomalies
 
@@ -127,7 +132,7 @@ cja-audit-log-monitor cli anomalies --watch --interval 600 --lookback 24 -F json
 
 Anomalies are three fixed checks, separate from rules: `off_hours_activity` (midnight to 5am, judged in UTC in the CLI), `high_activity_user` and `bulk_delete_single_user`. You cannot configure them.
 
-`anomalies` sends to Slack or webhooks only when the config has `notifications:` and `notify_on_anomalies: true`. The default is `false`, so a new setup prints anomalies but sends nothing. `anomalies --watch` keeps running, so run it under a process manager (systemd, launchd) or in `tmux`, not from cron. While it runs, it sends each anomaly to each channel once. A cron job that runs `anomalies` without `--watch` forgets between runs, so it can send the same anomaly every time.
+`anomalies` sends to Slack or webhooks only when the config has `notifications:` and `notify_on_anomalies: true`. The default is `false`, so a new setup prints anomalies but sends nothing. `anomalies --watch` keeps running, so run it under a process manager (systemd, launchd) or in `tmux`, not from cron. While it runs, it sends each anomaly to each channel once. A channel that failed gets it again on the next scan, and an anomaly that clears and later comes back is sent again. Each scan prints only the anomalies that are new in that scan, so `count` in the JSON is the new ones. A cron job that runs `anomalies` without `--watch` forgets between runs, so it can send the same anomaly every time.
 
 ## Exit codes and errors
 
@@ -136,4 +141,4 @@ Anomalies are three fixed checks, separate from rules: `off_hours_activity` (mid
 - `403` from `verify` or any command: add the Experience Platform API to the Developer Console project, and put the service account in a product profile with CJA access in the Admin Console.
 - `401`: the secret changed or expired. Retrieve the client secret again.
 - `invalid_scope`: `SCOPES` does not match the Developer Console. Copy it again after both APIs are added.
-- `Configuration error:` names the bad key and the file. Unknown keys only warn, e.g., a typo like `treshold_count`.
+- `Configuration error:` names the bad key and the file. An unknown key is not an error. It only warns, and the tool ignores it (see Alert rules).

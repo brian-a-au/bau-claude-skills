@@ -20,7 +20,7 @@ Flag tables for the `cja-audit-log-monitor` CLI. Verified 2026-11-19 against ver
 | `user` | `-u` required, `-d`, `-l`, `-F` | One user's events. |
 | `component` | `-i` required, `-t` type, `-l`, `-F` | One component's events. |
 | `dashboard` | `-i` required, `-l`, `-F` | One Workspace project's events. |
-| `find-action` | `-a` required, `-d`, `-l` (50), `-F` | Every use of one action. |
+| `find-action` | `-a` required (one value only), `-d`, `-l` (50), `-F` | Every use of one action. |
 | `top-users` | `-d`, `-n` (10), `-F` | Most active users. |
 | `show ENTRY_ID` | `--max-entries` (10000) | Every field of one entry. |
 
@@ -32,7 +32,7 @@ Flag tables for the `cja-audit-log-monitor` CLI. Verified 2026-11-19 against ver
 |---|---|---|
 | `stats` | `-d`, `-n`, `-F` | Summary statistics. |
 | `timeline` | `-d`, `-a`, `-C`, `-u`, `-F` | Activity by day and by UTC hour. |
-| `report` | `-d`, `-o`, `--pretty`/`--compact`, `--max-entries`, `--force` | Always JSON. stdout without `-o`. |
+| `report` | `-d`, `-o`, `--pretty`/`--compact`, `--max-entries` (10000), `--force` | Always JSON. stdout without `-o`. Sets `truncated` when it hits `--max-entries`. |
 
 ## Export
 
@@ -52,7 +52,7 @@ Flag tables for the `cja-audit-log-monitor` CLI. Verified 2026-11-19 against ver
 | `tail` | `-i` (5), `-u`, `--component-id`, `-a`, `--alerts`/`--no-alerts` | Filters before rules. |
 | `anomalies` | `--watch`, `--interval` (300, 5 to 86400), `--lookback` hours (24), `-F` | One scan, or a loop with `--watch`. |
 
-Each poll reads from 5 minutes before the last good poll, so an event the API indexes more than 5 minutes late is missed. A 400, 401, 403 or 404 stops `monitor`, `tail` and `anomalies --watch` with exit 1. Other errors are tried again at the next interval.
+The first poll is a baseline. It shows the newest 5 entries from the last 5 minutes and does not count them toward rules. Each later poll reads from 5 minutes before the last good poll, so an event the API indexes more than 5 minutes late is missed. A 400, 401, 403 or 404 stops `monitor`, `tail` and `anomalies --watch` with exit 1. Other errors are tried again at the next interval.
 
 `anomalies --watch -F json` prints one line per scan: `{"anomalies": [...], "count": N}`.
 
@@ -67,7 +67,7 @@ Each poll reads from 5 minutes before the last good poll, so an event the API in
 | `components` | all | Component types. An empty list is an error. |
 | `threshold_count` | 1 | Events needed to fire. |
 | `threshold_window_minutes` | 60 | 1 to 525,600. Measured by event time. |
-| `users` | all | User ids, emails or display names. Case does not matter. |
+| `users` | all | User ids, emails or display names. Case does not matter. An empty list is an error. |
 | `per_user` | `false` | Count each account on its own. |
 
 Built-in rules, used only when the config has no `alert_rules` key:
@@ -107,7 +107,7 @@ notifications:
 
 - Rule alerts are sent by `monitor`, `tail` and the TUI monitor view.
 - Anomalies are sent only by `cli anomalies`, and only with `notify_on_anomalies: true`. The TUI never sends anomalies.
-- While `anomalies` runs, it sends each anomaly to each channel once. It forgets this when it exits, so a cron job that runs `anomalies` once per schedule can send the same anomaly again on each run.
+- While `anomalies` runs, it sends each anomaly to each channel once. A failed channel gets it again on the next scan. An anomaly that clears and comes back is sent again. It forgets this when it exits, so a cron job that runs `anomalies` once per schedule can send the same anomaly again on each run.
 - `alerts test` never sends.
 
 ## Config settings

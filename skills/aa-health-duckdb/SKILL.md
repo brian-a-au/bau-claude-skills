@@ -33,7 +33,7 @@ Needs Python 3.12 or newer. The package is `aa-health-duckdb`, but the command i
 2. All four environment variables: `AHD_ORG_ID`, `AHD_CLIENT_ID`, `AHD_SECRET`, `AHD_SCOPES`.
 3. A config file: `--config PATH`, or `./config.json` with the keys `org_id`, `client_id`, `secret`, `scopes`.
 
-`ahd` only reads profiles. Create or test them with `aa_auto_sdr --profile-add` and `aa_auto_sdr --profile-test`. A profile and `--config` cannot be used together.
+If only some `AHD_*` variables are set, each one wins over the same key in the config file. `--config` together with all four variables is an error. `ahd` only reads profiles. Create or test them with `aa_auto_sdr --profile-add` and `aa_auto_sdr --profile-test`. A profile and `--config` cannot be used together.
 
 ## A typical session
 
@@ -45,7 +45,7 @@ ahd run --profile prod --rsid "My Suite"       # fetch 92 days, store a run, wri
 ahd runs --profile prod                        # list stored runs and their numbers
 ```
 
-- `--rsid` takes a report suite ID (exact case) or a name (any case). Give it more than once for several suites, or use `--all-suites`.
+- `--rsid` takes a report suite ID (exact case) or a name (any case). On `run`, give it more than once for several suites, or use `--all-suites`. `check` and `segments` take one `--rsid`.
 - The report goes to `./reports/` unless you give `--out`. The run prints its path.
 - With a profile, the database is `~/.aa/orgs/NAME/ahd.duckdb`. Without one it is `./data/ahd.duckdb`. `--db PATH` overrides both.
 - So pass the same `--profile` (or set `AA_PROFILE`) on every command, including `runs`, `render`, `alerts` and `individual`. Without it, those commands look in `./data/ahd.duckdb` and do not find the runs.
@@ -74,6 +74,8 @@ ahd alerts --run 2 --format csv > alerts.csv
 - `--rsid` here takes only the exact report suite ID, as `ahd runs` lists it. It does not look up names.
 - There is no `--date yesterday`. `--date YYYY-MM-DD` only decides whether a run counts as old.
 - Exit codes: `0` printed alerts, `4` no alerts, `1` error, `2` bad option. A daily job can send only when the exit code is 0.
+- If today's run failed, `alerts` uses the latest older finished run. It adds a `Warning:` line, and the JSON has `"stale": true`. So exit 0 can mean old alerts, and exit 4 can hide a failed run. Check the exit code of `ahd run` too, or read `stale` from `--format json`.
+- When one suite in `--rsid` has no finished run, `alerts` prints the others but exits 1, so an `&&` after it sends nothing.
 
 ## Daily job that sends only when there are alerts
 
@@ -82,7 +84,7 @@ ahd run --profile prod --all-suites
 ahd alerts --profile prod --all-suites > alerts.txt && mail -s "Analytics Health alerts" team@example.com < alerts.txt
 ```
 
-In cron or launchd, use the full path to `ahd` (find it with `which ahd`, often `~/.local/bin/ahd`), because the job's PATH may not include it. `ahd` itself sends no email. The repo has example scripts, `docs/examples/send_alerts.py` for HTML email and `send_slack.py` for Slack, which read `ahd alerts --format json`. The repo's `docs/scheduling.md` covers cron, launchd and Windows Task Scheduler. Add `--yes` to `ahd prune` in a scheduled job, because it cannot answer the prompt.
+In cron or launchd, use the full path to `ahd` (find it with `which ahd`, often `~/.local/bin/ahd`), because the job's PATH may not include it. `ahd` itself sends no email. The repo has example scripts, `docs/examples/send_alerts.py` for HTML email and `send_slack.py` for Slack, which read `ahd alerts --format json`. `send_alerts.py` also warns about old runs, so prefer it over the plain `mail` line. The repo's `docs/scheduling.md` covers cron, launchd and Windows Task Scheduler. Add `--yes` to `ahd prune` in a scheduled job, because it cannot answer the prompt.
 
 ## Anomaly methods
 
@@ -101,6 +103,15 @@ The credential's product profile is missing the Report Suite Tools permission "A
 - Fix: in the Adobe Admin Console, add "Anomaly Detection" to the Adobe Analytics product profile that holds the technical account. Then run `ahd check --rsid <suite>` to confirm.
 - Workaround with no new run: `ahd render --run N --anomaly-method weekday-median`.
 
+## Common mistakes
+
+- Running `aa-health-duckdb`. The command is `ahd`.
+- Leaving out `--profile` on `runs`, `render`, `alerts` or `individual`. They then look in `./data/ahd.duckdb`.
+- Passing a suite name to `ahd alerts --rsid`. It takes only the exact ID.
+- Writing `--date yesterday`. Dates are `YYYY-MM-DD`, and `alerts` reports the day before the run date on its own.
+- Using `--suite`, `--pair` or `report`. The real names are `--rsid`, `--dimension` with `--metric`, and `render`.
+- Giving `--config` or `--company` to a command that does not sign in, e.g., `alerts`. That exits 2.
+
 ## Exit codes
 
-`0` worked. `1` failed, or a run ended "failed". `2` bad option, or `check` found limited access or no suites. `3` `run` or `individual` finished with some problems ("partial"). `4` `alerts` found no alerts. `130` stopped with Ctrl-C.
+`0` worked. `1` failed, or a run ended "failed", or an option conflicts with an environment variable, or `--anomaly-sensitivity` is not `normal` with the `adobe` method. `2` bad option on the command line, or `check` found limited access, or `check` or `suites` found no suites. `3` `run` or `individual` finished with some problems ("partial"). `4` `alerts` found no alerts. `130` stopped with Ctrl-C.
