@@ -81,7 +81,7 @@ cja-audit-log-monitor cli report -d 30 -o report.json
 Facts that agents often get wrong:
 
 - `search` takes dates (`-s`, `-e`), not `--days`. `-s` and `-e` take `YYYY-MM-DD`, `YYYYMMDD` or an ISO date and time, read as UTC. For a relative window, compute the start date, or use `query --last-month`, `user -d N` or `find-action -d N`.
-- `search`, `query`, `user`, `component` and `dashboard` return at most 100 entries, and `list` and `find-action` at most 50. Raise `-l` for wider questions, e.g., `-l 5000`. `export` has no limit unless you give `--max-entries`.
+- `search`, `query`, `user`, `component` and `dashboard` return at most 100 entries, and `list` and `find-action` at most 50. Raise `-l` for wider questions, e.g., `-l 5000`. It has no upper limit. `export` has no limit unless you give `--max-entries`.
 - `-a` (action) can be repeated on `search`, `query`, `export`, `timeline` and `tail`. `-C` (component) can be repeated on `list`, `search`, `query`, `export` and `timeline`. Both ignore case. `find-action -a` takes one action, and a second `-a` silently replaces the first. For several actions, use `search -a X -a Y`.
 - Action names: `CREATE`, `EDIT`, `DELETE`, `SHARE`, `UNSHARE`, `APPROVE`, `UNAPPROVE`, `EXPORT`, `TRANSFER`, `API_REQUEST`, and more. Component names: `PROJECT`, `FILTER` (segments), `CALCULATED_METRIC`, `DATA_VIEW`, `CONNECTION`, `AUDIENCE`, `FULL_TABLE_EXPORT`, and more. Run `cli actions` and `cli components` for the full lists.
 - `export -o` and `report -o` refuse a file that exists unless you add `--force`.

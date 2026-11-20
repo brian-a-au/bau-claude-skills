@@ -33,7 +33,7 @@ Needs Python 3.12 or newer. The package is `aa-health-duckdb`, but the command i
 2. All four environment variables: `AHD_ORG_ID`, `AHD_CLIENT_ID`, `AHD_SECRET`, `AHD_SCOPES`.
 3. A config file: `--config PATH`, or `./config.json` with the keys `org_id`, `client_id`, `secret`, `scopes`.
 
-If only some `AHD_*` variables are set, each one wins over the same key in the config file. `--config` together with all four variables is an error. `ahd` only reads profiles. Create or test them with `aa_auto_sdr --profile-add` and `aa_auto_sdr --profile-test`. A profile and `--config` cannot be used together.
+If only some `AHD_*` variables are set, each one wins over the same key in the config file. `--config` together with all four variables is an error. When a credential sees more than one login company, `ahd` uses the first one and prints its name when it signs in. Choose another with `--company ID_OR_NAME` on `check`, `suites`, `segments`, `run` or `individual`. `ahd` only reads profiles. Create or test them with `aa_auto_sdr --profile-add` and `aa_auto_sdr --profile-test`. A profile and `--config` cannot be used together.
 
 ## A typical session
 
