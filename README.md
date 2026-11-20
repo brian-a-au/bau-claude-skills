@@ -1,6 +1,6 @@
 # Claude Code Skills
 
-A collection of Claude Code skills for Adobe Analytics and Customer Journey Analytics. Use them to understand the core concepts, set up API access, and run the Solution Design Reference tools for generating, grading, visualizing, and tracking your implementation.
+A collection of Claude Code skills for Adobe Analytics and Customer Journey Analytics. Use them to understand the core concepts, set up API access, and run the Solution Design Reference tools for generating, grading, visualizing, and tracking your implementation. Two more skills cover monitoring: the health of Adobe Analytics report suites, and the CJA audit logs.
 
 ## Skills
 
@@ -26,6 +26,13 @@ A collection of Claude Code skills for Adobe Analytics and Customer Journey Anal
 | [cja-auto-sdr](skills/cja-auto-sdr/SKILL.md)                                       | Runs the `cja_auto_sdr` CLI to generate SDR docs from CJA Data Views, diff and snapshot changes, run org wide reports, and publish to Notion.                   |
 | [sdr-visualizer](skills/sdr-visualizer/SKILL.md)                                   | Runs `sdr-visualizer` to turn SDR snapshots into an HTML catalog you can browse and search, with a reference graph and Changes and Trend views.                 |
 | [sdr-grader](https://github.com/brian-a-au/sdr-grader/tree/main/skills/sdr-grader) | Reads and explains an `sdr-grader` grade report. This skill lives in the [sdr-grader repo](https://github.com/brian-a-au/sdr-grader), so install it from there. |
+
+### Monitoring
+
+| Skill | What it does |
+| ----- | ------------ |
+| [aa-health-duckdb](skills/aa-health-duckdb/SKILL.md) | Runs the `ahd` CLI to check the health of Adobe Analytics report suites. It finds anomalies, large drops and spikes, and drops to zero for every custom event, eVar and prop, stores each run in DuckDB, and writes an offline HTML report. It also covers daily alert emails. |
+| [cja-audit-log-monitor](skills/cja-audit-log-monitor/SKILL.md) | Runs `cja-audit-log-monitor` to search, export and watch CJA audit logs. It covers alert rules for bulk deletes, exports and shares, anomaly scans, and sending alerts to Slack or a webhook. |
 
 ### Workflow
 
@@ -53,6 +60,15 @@ The `sdr-grader` skill listed above lives in its own repository, so install it f
 You set up credentials once, generate an SDR and a snapshot from Adobe Analytics or CJA, then grade, visualize, or diff that snapshot. The `sdr-workflow` skill runs this whole flow end to end.
 
 The diagram is editable: open [`assets/how-it-fits-together.excalidraw`](assets/how-it-fits-together.excalidraw) at [excalidraw.com](https://excalidraw.com) to change it.
+
+## Monitoring tools
+
+The two monitoring skills wrap these tools. They do not use SDR snapshots. Each one calls Adobe directly and only reads data.
+
+| Tool | Role |
+| ---- | ---- |
+| [aa-health-duckdb](https://github.com/brian-a-au/aa-health-duckdb) | Check the health of Adobe Analytics report suites, with run history in DuckDB |
+| [cja-audit-log-monitor](https://github.com/brian-a-au/cja-audit-log-monitor) | Search, export and watch CJA audit logs, with alert rules |
 
 ## Installation
 
@@ -111,7 +127,9 @@ The SDR command line tools that the skills drive need Python 3.14 or newer. Each
 | `cja_auto_sdr` | `uv tool install cja-auto-sdr` |
 | `sdr-grader` | `uv tool install sdr-grader` |
 | `sdr-visualizer` | `uv tool install sdr-visualizer` |
+| `ahd` | `uv tool install aa-health-duckdb` (Python 3.12 or newer) |
+| `cja-audit-log-monitor` | `uv tool install cja-audit-log-monitor` (Python 3.11 or newer) |
 
 You do not need every tool. Install only the ones you plan to use. If you prefer pip, run `pip install` with the same package name, for example `pip install aa-auto-sdr`.
 
-The tools read live data from Adobe, so they need OAuth Server to Server credentials. Set these up once with the `adobe-analytics-api-setup` skill for Adobe Analytics, or the `adobe-cja-api-setup` skill for CJA.
+The tools read live data from Adobe, so they need OAuth Server to Server credentials. Set these up once with the `adobe-analytics-api-setup` skill for Adobe Analytics, or the `adobe-cja-api-setup` skill for CJA. `ahd` reads the same profiles as `aa_auto_sdr`. `cja-audit-log-monitor` reads the same kind of credential as `cja_auto_sdr`, from environment variables or a `.env` file.

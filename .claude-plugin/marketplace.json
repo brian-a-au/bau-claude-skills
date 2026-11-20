@@ -9,8 +9,8 @@
       "name": "bau-claude-skills",
       "source": "./",
       "displayName": "Adobe Analytics & CJA Skills",
-      "description": "Claude Code skills for Adobe Analytics and Customer Journey Analytics: concepts, API setup, and the SDR tooling (aa_auto_sdr, cja_auto_sdr, sdr-grader, sdr-visualizer).",
-      "version": "1.0.0",
+      "description": "Claude Code skills for Adobe Analytics and Customer Journey Analytics: concepts, API setup, and the SDR tooling (aa_auto_sdr, cja_auto_sdr, sdr-grader, sdr-visualizer), and monitoring (aa-health-duckdb, cja-audit-log-monitor).",
+      "version": "1.1.0",
       "author": {
         "name": "Brian Au",
         "url": "https://github.com/brian-a-au"
@@ -24,7 +24,9 @@
         "cja",
         "aa",
         "sdr",
-        "customer-journey-analytics"
+        "customer-journey-analytics",
+        "monitoring",
+        "audit-logs"
       ]
     }
   ]
