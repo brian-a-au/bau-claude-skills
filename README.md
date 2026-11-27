@@ -70,6 +70,10 @@ The two monitoring skills wrap these tools. They do not use SDR snapshots. Each 
 | [aa-health-duckdb](https://github.com/brian-a-au/aa-health-duckdb) | Check the health of Adobe Analytics report suites, with run history in DuckDB |
 | [cja-audit-log-monitor](https://github.com/brian-a-au/cja-audit-log-monitor) | Search, export and watch CJA audit logs, with alert rules |
 
+## Standards
+
+The [`standards/`](standards/) folder holds the rules that these tools share. The first one is the [Adobe credentials standard](standards/adobe-credentials-v1.md). It says how a tool finds, checks, shows and protects an Adobe credential, and it comes with shared test cases that each tool runs. The standard is a target, and each tool repo lists the rules it does not meet yet.
+
 ## Installation
 
 You need [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed and configured. There are two ways to install the skills.
